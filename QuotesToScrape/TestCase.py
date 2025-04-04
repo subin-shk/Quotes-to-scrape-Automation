@@ -8,21 +8,11 @@ from pages.login_page import LoginPage
 from pages.quotes_page import QuoteBlocks
 from locator import Locators
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from fixtures import BaseTest
 
 
-class QuotesToScrape(TestCase):
-    def setUp(self):
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")  # Ensure GUI is not launched
-
-        self.driver = webdriver.Chrome(options=chrome_options)
-
-        # self.driver = webdriver.Chrome()
-        self.driver.maximize_window()
-        self.wait = WebDriverWait(self.driver, 5)
-        self.driver.get("https://quotes.toscrape.com/")
-        self.login_page = LoginPage(self.driver)
-        self.quotes_page = QuoteBlocks(self.driver)
+class QuotesToScrape(BaseTest):
 
     def test_title(self):
         title = self.driver.title
@@ -38,7 +28,7 @@ class QuotesToScrape(TestCase):
         self.login_page.enter_password("password")
         self.login_page.click_login_button()
         expected_result = "https://quotes.toscrape.com/login"
-        self.driver.implicitly_wait(1)
+        # self.driver.implicitly_wait(1)
         try:
             actual_result = self.driver.current_url
             self.assertNotEqual(
@@ -54,7 +44,6 @@ class QuotesToScrape(TestCase):
         self.login_page.enter_username("")
         self.login_page.enter_password("password")
         self.login_page.click_login_button()
-        expected_result = "https://quotes.toscrape.com/login"
         self.driver.implicitly_wait(1)
         expected_result = "https://quotes.toscrape.com/login"
         try:
@@ -73,7 +62,6 @@ class QuotesToScrape(TestCase):
         self.login_page.enter_username("username")
         self.login_page.enter_password("")
         self.login_page.click_login_button()
-        expected_result = "https://quotes.toscrape.com/login"
         self.driver.implicitly_wait(1)
         expected_result = "https://quotes.toscrape.com/login"
         try:
@@ -94,8 +82,8 @@ class QuotesToScrape(TestCase):
             print("Pass: No. of quotes: ", len(quotes))
         except AssertionError as e:
             print(e)
-        for val in quotes:
-            print(val.text)
+        # for val in quotes:
+        #     print(val.text)
 
     def test_display_authors(self):
         authors = self.quotes_page.get_authors()
@@ -106,8 +94,8 @@ class QuotesToScrape(TestCase):
             print("Pass: No. of authors: ", len(authors))
         except AssertionError as e:
             print(e)
-        for author in authors:
-            print(author.text)
+        # for author in authors:
+        #     print(author.text)
 
     def test_display_tags(self):
         tags = self.quotes_page.get_tags()
@@ -117,8 +105,8 @@ class QuotesToScrape(TestCase):
             print("Pass: No. of tags are ", len(tags))
         except AssertionError as e:
             print(e)
-        for t in tags:
-            print(t.text)
+        # for t in tags:
+        #     print(t.text)
 
     def test_top_tags(self):
         tags = self.quotes_page.get_top_ten_tags()
@@ -153,7 +141,7 @@ class QuotesToScrape(TestCase):
         except AssertionError as e:
             print(e)
 
-    def test_description(self):
+    def test_author_description(self):
 
         try:
             about_author = self.quotes_page.get_about_link()
@@ -171,7 +159,7 @@ class QuotesToScrape(TestCase):
         except AssertionError as e:
             print(e)
 
-    # def test_total_quotes(self):
+    # def test_10_total_quotes(self):
     #     totalQuotes = 0
 
     #     try:
@@ -180,9 +168,9 @@ class QuotesToScrape(TestCase):
     #             noOfQuotesPerPage = len(quotes)
     #             totalQuotes += noOfQuotesPerPage
 
-    #             next_button = self.quotes_page.get_next_btn()
-    #             if next_button:
-    #                 self.quotes_page.click_next_btn()
+    #             next_buttons = self.quotes_page.get_next_btn()
+    #             if next_buttons:
+    #                 next_buttons[0].click()
     #             else:
     #                 break
 
@@ -192,11 +180,36 @@ class QuotesToScrape(TestCase):
     #     except Exception as e:
     #         print(f"Error: {e}")
 
-    def tearDown(self):
-        self.driver.quit()
+    def test_11_display_all(self):
+
+        quotes = self.quotes_page.get_quotes()
+        authors = self.quotes_page.get_authors()
+        tags_list = self.quotes_page.get_tags()
+
+        try:
+            self.assertGreater(
+                len(quotes), 5, "Failed: Couldn't get quotes, authors and tags"
+            )
+            print("Pass: Was able to retrive quotes, author and tags")
+        except AssertionError as e:
+            print(e)
+
+        # print("-------------------------")
+
+        # for i in range(len(quotes)):
+        #     print(f'"{quotes[i].text}"')
+        #     print(f" - by {authors[i].text}")
+
+        #     tags = tags_list[i].find_elements(By.TAG_NAME, "a")
+
+        #     print("Tags:", " ".join(tag.text for tag in tags))
+
+        #     print()
+        #     print("-------------------------")
 
 
 if __name__ == "__main__":
-    unittest.main(defaultTest="QuotesToScrape.test_description")
+    # unittest.main(defaultTest="QuotesToScrape.test_display_all")
+    unittest.main()
     # globals()[sys.argv[1]]()
     # test_display_quotes()

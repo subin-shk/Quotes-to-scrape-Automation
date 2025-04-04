@@ -6,7 +6,7 @@ from locator import Locators
 class QuoteBlocks:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 5)
+        self.wait = WebDriverWait(driver, 10)
 
     def get_quotes(self):
         return self.wait.until(EC.presence_of_all_elements_located(Locators.QUOTE_TEXT))
@@ -27,7 +27,9 @@ class QuoteBlocks:
         return self.wait.until(EC.presence_of_element_located(Locators.VIEWING_TAG))
 
     def get_next_btn(self):
-        return self.wait.until(EC.presence_of_element_located(Locators.NEXT_BUTTON))
+        return self.wait.until(
+            EC.visibility_of_all_elements_located(Locators.NEXT_BUTTON)
+        )
 
     def click_next_btn(self):
         return self.wait.until(
