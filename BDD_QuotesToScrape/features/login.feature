@@ -1,6 +1,5 @@
 Feature: User Login Functionality
 
-  @pytest.mark.login
   Scenario: User logs in with valid credentials
     Given the user is on the login page
     When the user logs in with username "validuser" and password "validpassword"
