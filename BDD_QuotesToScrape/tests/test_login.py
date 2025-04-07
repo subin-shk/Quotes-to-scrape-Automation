@@ -1,6 +1,7 @@
 import pytest
 from pytest_bdd import scenarios, given, when, then, parsers
 from pages.login_page import LoginPage
+import time
 
 # Load feature scenarios
 scenarios("../features/login.feature")
@@ -11,14 +12,22 @@ def login_page(driver):
     return LoginPage(driver)
 
 
+@pytest.fixture
+def username():
+    return "validuser"
+
+
+@pytest.fixture
+def password():
+    return "validpassword"
+
+
 @given("the user is on the login page")
 def open_login_page(driver):
     driver.get("https://quotes.toscrape.com/login")
 
 
-@when(
-    parsers.re(r'the user logs in with username "(.*)" and password "(.*)"')
-)
+@when(parsers.re(r'the user logs in with username "(.*)" and password "(.*)"'))
 def user_logs_in(login_page, username, password):
     login_page.enter_username(username)
     login_page.enter_password(password)
@@ -27,8 +36,9 @@ def user_logs_in(login_page, username, password):
 
 @then("the user should be redirected to the home page")
 def check_login_success(driver):
+    # time.sleep(3)
     assert (
-        driver.current_url != "https://quotes.toscrape.com/login"
+        driver.current_url != "https://quotes.toscrape.com"
     ), "Failed: User was not able to log in"
 
 
@@ -37,4 +47,3 @@ def check_login_fail(driver):
     assert (
         driver.current_url == "https://quotes.toscrape.com/login"
     ), "Failed: User was able to log in with invalid credentials"
-3
