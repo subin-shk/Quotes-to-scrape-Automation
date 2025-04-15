@@ -6,7 +6,7 @@ from locator import Locators
 class QuoteBlocks:
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, 30)
 
     def get_quotes(self):
         return self.wait.until(EC.presence_of_all_elements_located(Locators.QUOTE_TEXT))
