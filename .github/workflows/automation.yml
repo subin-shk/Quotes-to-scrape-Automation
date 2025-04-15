@@ -1,0 +1,33 @@
+name: Run TestCase.py to automate QuotesToScrape website
+
+on: [push]
+
+jobs:
+  ega:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11" # use stable version
+
+      - uses: nanasess/setup-chromedriver@v2
+        with:
+          chromedriver-version: "135.0.7049.84"
+          chromeapp: chrome
+
+      - run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
+      - name: Install selenium
+        run: pip install selenium
+
+      - name: Run test
+        run: |
+          cd QuotesToScrape
+          python TestCase.py
+
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
